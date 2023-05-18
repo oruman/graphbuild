@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import sample from "@/data/sample.json";
+import sample from "@/data/custom.json";
 
 const emit = defineEmits(["update"]);
 
 const data = ref(JSON.stringify(sample));
 
 const submit = () => {
-  let json = {};
+  let json = [];
   try {
     json = JSON.parse(data.value)
   } catch {
@@ -30,6 +30,8 @@ onMounted(() => {
 
 <style module>
 .form {
+  max-width: 100%;
+  width: 800px;
   display: flex;
   flex-direction: column;
 }

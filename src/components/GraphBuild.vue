@@ -1,49 +1,94 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import type { PropType } from "vue";
-import type { Graph } from "@/types";
 import { useGraph } from "@/composables/graph";
+import type { CustomNode } from "@/types/custom";
+import type { Boundaries } from "@/types";
+import ArrowBlock from "@/components/ArrowBlock.vue";
 
 const props = defineProps({
   data: {
-    type: Object as PropType<Graph|Record<string,unknown>>,
-    default: () => ({})
+    type: Array as PropType<CustomNode>,
+    default: () => []
   }
 });
 
-const graph = computed(() => useGraph(props.data as Graph));
+const graph = computed(() => useGraph(props.data as CustomNode[]));
+
+const internalRefTable = ref<HTMLElement | null>(null);
+const boundaries = ref<Boundaries>({});
+const setBoundary = () => {
+  boundaries.value = {};
+  if (!(internalRefTable.value instanceof HTMLElement)) {
+    return;
+  }
+  const el = internalRefTable.value;
+  const top = el.getBoundingClientRect().top;
+  el.querySelectorAll("[data-path]").forEach((item) => {
+    const id = item.attributes["data-path"].value;
+    const rect = item.getBoundingClientRect();
+    boundaries.value[id] = Math.round(rect.top - top + rect.height / 2);
+  })
+}
+
+const refTable = computed({
+  get: () => internalRefTable.value,
+  set: (value: HTMLElement | null) => {
+    internalRefTable.value = value;
+    setBoundary();
+  }
+})
 </script>
 
 <template>
-  <div :class="$style.table">
-    <template
-      v-for="(column, i) of graph.table"
-      :key="`column_${i}`"
+  <div :class="$style.wrapper">
+    <div
+      ref="refTable"
+      :class="$style.table"
     >
-      <div :class="$style.column">
-        <div
-          v-for="(cell, j) of column"
-          :key="`cell_${i}_${j}`"
-          :class="$style.cell"
-          :data-id="`end_${cell}`"
-        >
-          <h3>{{ graph.all[cell].text }}</h3>
+      <template
+        v-for="(column, i) of graph.table"
+        :key="`column_${i}`"
+      >
+        <div :class="$style.column">
           <div
-            v-for="(child, k) of graph.all[cell].children"
-            :key="`text_${i}_${j}_${k}`"
-            :class="$style.child"
-            :data-id="`start_${cell}_${k}`"
+            v-for="(cell, j) of column"
+            :key="`cell_${i}_${j}`"
+            :class="$style.cell"
+            :data-path="[i, j].join('_')"
           >
-            {{ child }}
+            <h3>{{ data[cell].text }}</h3>
+            <div
+              v-for="(child, k) of data[cell].child"
+              :key="`text_${i}_${j}_${k}`"
+              :class="$style.child"
+              :data-path="[i,j,k].join('_')"
+            >
+              {{ child.tag }}
+            </div>
           </div>
         </div>
-      </div>
-      <div />
-    </template>
+        <div v-if="graph.arrows[i]" :class="$style.arrowColumn">
+          <arrow-block
+            v-for="(arrow, j) of graph.arrows[i]"
+            :key="`arrow_${i}_${j}`"
+            :column="i"
+            :path="arrow"
+            :width="(j + 1) / Math.max(1, graph.arrows[i].length)"
+            :boundaries="boundaries"
+          />
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <style module>
+.wrapper {
+  max-width: 100vw;
+  overflow: auto;
+}
+
 .table {
   display: grid;
   grid-auto-flow: column;
@@ -69,4 +114,8 @@ const graph = computed(() => useGraph(props.data as Graph));
 }
 
 .child {}
+
+.arrowColumn {
+  position: relative;
+}
 </style>

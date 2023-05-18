@@ -1,52 +1,39 @@
-import type {Graph, GraphCell} from "@/types";
+import type { CustomNode } from "@/types/custom";
 
-export function useGraph(graph: Graph) {
-  const table: string[][] = [];
-  const all: Record<string, GraphCell> = {};
-  const arrows: string[][] = [];
-  const divider = "_";
+export function useGraph(graph: CustomNode[]) {
+  const table: number[][] = [];
+  const arrows: number[][][] = [];
 
-  const transform = (item: Graph, path: number[]) => {
-    if (!item.text) {
-      return
+  const transform = (num: number, path: number[]) => {
+    if (!graph[num]) {
+      return;
     }
+    const item = graph[num];
+    const newPath = [...path, num];
 
-    const id = path.join(divider);
-
-    if (item.parent && path.length > 1) {
-      const numArrow = path.length - 2;
-      if (!arrows[numArrow]) {
-        arrows[numArrow] = [];
-      }
-      arrows[numArrow].push(id);
-    }
-
-    const newItem: GraphCell = {
-      text: item.text,
-      children: []
-    };
-
-    if (item.nodes && Array.isArray(item.nodes)) {
-      item.nodes.forEach((node, i) => {
-        if (!node.parent) {
-          return;
-        }
-        newItem.children.push(node.parent);
-        transform(node, [...path, i])
-      })
-    }
-    all[id] = newItem;
-    const numColumn = path.length - 1;
+    const numColumn = path.length;
     if (!table[numColumn]) {
       table[numColumn] = [];
     }
-    table[numColumn].push(id);
+    table[numColumn].push(num);
+
+    if (item.child && Array.isArray(item.child)) {
+      item.child.forEach((child, i) => {
+        if (!child.goto || path.includes(child.goto)) {
+          return
+        }
+        transform(child.goto, newPath);
+        if (!arrows[numColumn]) {
+          arrows[numColumn] = [];
+        }
+        arrows[numColumn].push([table[numColumn].length - 1, i, table[numColumn + 1].length - 1]);
+      })
+    }
   }
 
-  transform(graph, [0]);
+  transform(0, []);
 
   return {
-    all,
     table,
     arrows
   }

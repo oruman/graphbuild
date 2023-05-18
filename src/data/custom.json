@@ -1,0 +1,64 @@
+[
+  {
+    "text": "Root",
+    "child": [
+      {
+        "tag": "child 1",
+        "goto": 1
+      },
+      {
+        "tag": "child 2",
+        "goto": 2
+      },
+      {
+        "tag": "child 3",
+        "goto": 3
+      }
+    ]
+  },
+  {
+    "text": "Node 1",
+    "child": [
+      {
+        "tag": "child 1.1",
+        "goto": 4
+      }
+    ]
+  },
+  {
+    "text": "Node 2",
+    "child": [
+    ]
+  },
+  {
+    "text": "Node 3",
+    "child": [
+      {
+        "tag": "child 3.1",
+        "goto": 5
+      },
+      {
+        "tag": "child 3.2",
+        "goto": 6
+      },
+      {
+        "tag": "child 3.3"
+      }
+    ]
+  },
+  {
+    "text": "Node 1.1",
+    "child": [
+    ]
+  },
+  {
+    "text": "Node 3.1",
+    "child": [
+    ]
+  },
+  {
+    "text": "Node 3.2",
+    "child": [
+    ]
+  }
+]
