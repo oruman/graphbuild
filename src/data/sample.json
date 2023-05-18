@@ -1,0 +1,36 @@
+{
+  "text": "Root",
+  "nodes": [
+    {
+      "parent": "child 1",
+      "text": "Node 1",
+      "nodes": [
+        {
+          "parent": "child 1.1",
+          "text": "Node 1.1"
+        }
+      ]
+    },
+    {
+      "parent": "child 2",
+      "text": "Node 2"
+    },
+    {
+      "parent": "child 3",
+      "text": "Node 3",
+      "nodes": [
+        {
+          "parent": "child 3.1",
+          "text": "Node 3.1"
+        },
+        {
+          "parent": "child 3.2"
+        },
+        {
+          "parent": "child 3.3",
+          "text": "Node 3.3"
+        }
+      ]
+    }
+  ]
+}
