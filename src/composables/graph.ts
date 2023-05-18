@@ -6,7 +6,7 @@ export function useGraph(graph: CustomNode[]) {
 
   const transform = (num: number, path: number[]) => {
     if (!graph[num]) {
-      return;
+      return false;
     }
     const item = graph[num];
     const newPath = [...path, num];
@@ -19,16 +19,17 @@ export function useGraph(graph: CustomNode[]) {
 
     if (item.child && Array.isArray(item.child)) {
       item.child.forEach((child, i) => {
-        if (!child.goto || path.includes(child.goto)) {
+        if (!child.goto || path.includes(child.goto) || !transform(child.goto, newPath)) {
           return
         }
-        transform(child.goto, newPath);
         if (!arrows[numColumn]) {
           arrows[numColumn] = [];
         }
         arrows[numColumn].push([table[numColumn].length - 1, i, table[numColumn + 1].length - 1]);
       })
     }
+
+    return true;
   }
 
   transform(0, []);

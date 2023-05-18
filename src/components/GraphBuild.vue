@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import {computed, nextTick, ref, watch} from "vue";
 import type { PropType } from "vue";
 import { useGraph } from "@/composables/graph";
 import type { CustomNode } from "@/types/custom";
@@ -15,29 +15,29 @@ const props = defineProps({
 
 const graph = computed(() => useGraph(props.data as CustomNode[]));
 
-const internalRefTable = ref<HTMLElement | null>(null);
+const refTable = ref<HTMLElement | null>(null);
 const boundaries = ref<Boundaries>({});
 const setBoundary = () => {
   boundaries.value = {};
-  if (!(internalRefTable.value instanceof HTMLElement)) {
+  if (!(refTable.value instanceof HTMLElement)) {
     return;
   }
-  const el = internalRefTable.value;
+  const el = refTable.value;
   const top = el.getBoundingClientRect().top;
-  el.querySelectorAll("[data-path]").forEach((item) => {
+  const items = el.querySelectorAll("[data-path]");
+  items.forEach((item) => {
     const id = item.getAttribute("data-path") ?? "";
     const rect = item.getBoundingClientRect();
     boundaries.value[id] = Math.round(rect.top - top + rect.height / 2);
   })
 }
 
-const refTable = computed({
-  get: () => internalRefTable.value,
-  set: (value: HTMLElement | null) => {
-    internalRefTable.value = value;
-    setBoundary();
+watch(
+  () => graph.value.table,
+  () => {
+    nextTick(setBoundary);
   }
-})
+)
 </script>
 
 <template>
