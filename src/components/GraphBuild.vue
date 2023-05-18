@@ -6,7 +6,7 @@ import { useGraph } from "@/composables/graph";
 
 const props = defineProps({
   data: {
-    type: Object as PropType<Graph>,
+    type: Object as PropType<Graph|Record<string,unknown>>,
     default: () => ({})
   }
 });
@@ -60,11 +60,12 @@ const graph = computed(() => useGraph(props.data as Graph));
 .cell {
   border: solid 1px black;
   border-radius: 8px;
-  & h3 {
-    font-weight: bold;
-    border-radius: 8px;
-    background-color: #e6e6e6;
-  }
+}
+
+.cell h3 {
+  font-weight: bold;
+  border-radius: 8px;
+  background-color: #e6e6e6;
 }
 
 .child {}
