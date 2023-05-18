@@ -4,6 +4,6 @@ export interface CustomNode {
 }
 
 interface CustomNodeChild {
-  tags: string
+  tag: string
   goto?: number
 }

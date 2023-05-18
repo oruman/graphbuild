@@ -8,8 +8,14 @@ const props = defineProps({
   path: {
     type: Array as PropType<number[]>,
   },
-  column: Number,
-  width: Number,
+  column: {
+    type: Number,
+    default: 0,
+  },
+  width: {
+    type: Number,
+    default: 0,
+  },
   boundaries: {
     type: Object as PropType<Boundaries>,
   }
@@ -17,8 +23,8 @@ const props = defineProps({
 
 const style = useCssModule();
 
-const start = computed(() => props.boundaries?.[`${props.column}_${props.path?.[0]}_${props.path?.[1]}`]);
-const end = computed(() => props.boundaries?.[`${props.column + 1}_${props.path?.[2]}`]);
+const start = computed(() => props.boundaries?.[`${props.column}_${props.path?.[0]}_${props.path?.[1]}`] ?? 0);
+const end = computed(() => props.boundaries?.[`${props.column + 1}_${props.path?.[2]}`] ?? 0);
 const min = computed(() => Math.min(start.value, end.value));
 const height = computed(() => Math.max(start.value, end.value));
 

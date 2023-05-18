@@ -8,7 +8,7 @@ import ArrowBlock from "@/components/ArrowBlock.vue";
 
 const props = defineProps({
   data: {
-    type: Array as PropType<CustomNode>,
+    type: Array as PropType<CustomNode[]>,
     default: () => []
   }
 });
@@ -25,7 +25,7 @@ const setBoundary = () => {
   const el = internalRefTable.value;
   const top = el.getBoundingClientRect().top;
   el.querySelectorAll("[data-path]").forEach((item) => {
-    const id = item.attributes["data-path"].value;
+    const id = item.getAttribute("data-path") ?? "";
     const rect = item.getBoundingClientRect();
     boundaries.value[id] = Math.round(rect.top - top + rect.height / 2);
   })

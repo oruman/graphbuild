@@ -2,8 +2,9 @@
 import { ref } from "vue";
 import GraphBuild from "@/components/GraphBuild.vue";
 import FormEdit from "@/components/FormEdit.vue";
+import type { CustomNode } from "@/types/custom";
 
-const data = ref({});
+const data = ref<CustomNode[]>([]);
 </script>
 
 <template>
